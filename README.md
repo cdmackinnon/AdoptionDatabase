@@ -4,6 +4,8 @@
 
 In this project, you'll provide the prototype implementation of your term project database and an optional basic interface for it.
 
+[Google Doc](https://docs.google.com/document/d/1gfmpAALoAo1Lg0dl1MrpXSNFmDQSYqzzieVb54i0OsE/edit)
+
 ### I – Database Normalization and Implementation
 
 Begin by considering our feedback from your ER diagrams. Once you have finalized your design, translate it to schema definitions using the approach we covered in class and list all functional dependencies in your schemata. If your ER design is robust, these tables should be in BCNF. If they are not, decompose them until all of your tables are in BCNF.

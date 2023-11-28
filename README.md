@@ -1,7 +1,6 @@
-# AdoptionDatabase
-
-# CSCI 421 Database Systems
-## Term Project – Phase Two
+# Adoption Database ( CSCI 421 Database Systems )
+## Term Project – Phase Two 
+### Due Friday, December 8, 2023 11:59:00 PM EST
 
 In this project, you'll provide the prototype implementation of your term project database and an optional basic interface for it.
 

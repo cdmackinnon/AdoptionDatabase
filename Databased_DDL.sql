@@ -1,19 +1,18 @@
 -- Project 2 Alien Adoption Table Instantiation
 -- By Connor MacKinnon, Jake Richardson, Hannah Zimmerman
 
-
-CREATE TABLE family(
+CREATE TABLE Family(
     id SERIAL PRIMARY KEY,
     last_name VARCHAR(50) NOT NULL,
     income DECIMAL(10, 2),
     planet_of_residence VARCHAR(50)
 );
 
-CREATE TABLE adoption_request (
+CREATE TABLE Adoption_request (
     request_id SERIAL PRIMARY KEY,
     alien_id INT REFERENCES alien(alien_id),
     family_id INT REFERENCES family(family_id),
-    UNIQUE (alien_id, family_id) -- Ensures uniqueness of alien-family pairs
+    UNIQUE (alien_id, family_id) -- Ensures a family cannot request the same alien twice
 );
 
 CREATE TABLE Agency (
@@ -23,11 +22,24 @@ CREATE TABLE Agency (
 
 CREATE TABLE Planet (
     name VARCHAR(50) PRIMARY KEY,
-    galaxy VARCHAR(50),
-    climate VARCHAR(50)
+    galaxy VARCHAR(50) NOT NULL,
+    climate VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Orphanages (
     name VARCHAR(50) PRIMARY KEY,
     agency VARCHAR(50) PRIMARY KEY
+);
+
+CREATE TABLE Medical (
+    alien_ID SERIAL PRIMARY KEY,
+    age INT,
+    vaccinated BOOLEAN
+);
+
+CREATE TABLE Alien (
+    ID SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    home_planet VARCHAR(50),
+    orphanage VARCHAR(50) NOT NULL
 );

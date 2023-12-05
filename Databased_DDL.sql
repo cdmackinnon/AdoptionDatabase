@@ -19,11 +19,24 @@ CREATE TABLE agency (
 
 CREATE TABLE planet (
     name VARCHAR(50) PRIMARY KEY,
-    galaxy VARCHAR(50),
-    climate VARCHAR(50)
+    galaxy VARCHAR(50) NOT NULL,
+    climate VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE orphanages (
     name VARCHAR(50) PRIMARY KEY,
     agency VARCHAR(50) PRIMARY KEY
+);
+
+CREATE TABLE medical (
+    alien_ID SERIAL PRIMARY KEY,
+    age INT,
+    vaccinated BOOLEAN
+);
+
+CREATE TABLE alien (
+    ID SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    home_planet VARCHAR(50),
+    orphanage VARCHAR(50) NOT NULL
 );

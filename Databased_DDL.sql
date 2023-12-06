@@ -18,6 +18,7 @@ CREATE TABLE Adoption_request (
 CREATE TABLE Agency (
     name VARCHAR(50) PRIMARY KEY,
     planet VARCHAR(50) REFERENCES planet(name)
+        on delete set null
 );
 
 CREATE TABLE Planet (
@@ -32,7 +33,7 @@ CREATE TABLE Orphanages (
 );
 
 CREATE TABLE Medical (
-    alien_ID SERIAL PRIMARY KEY,
+    alien_ID SERIAL PRIMARY KEY REFERENCES Alien (ID),
     age INT,
     vaccinated BOOLEAN
 );
@@ -40,6 +41,15 @@ CREATE TABLE Medical (
 CREATE TABLE Alien (
     ID SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    home_planet VARCHAR(50),
-    orphanage VARCHAR(50) NOT NULL
+    home_planet VARCHAR(50) REFERENCES Planet (name)
+        on delete set null,
+    orphanage VARCHAR(50) REFERENCES Orphanages
+		on delete set null
+);
+
+CREATE TABLE Adopted (
+    alien_ID SERIAL PRIMARY KEY REFERENCES Alien (ID)
+        on delete cascade,
+    family_id INT REFERENCES Family (ID)
+        on delete set null
 );

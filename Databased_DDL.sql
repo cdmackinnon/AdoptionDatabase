@@ -32,7 +32,7 @@ CREATE TABLE Alien (
     name VARCHAR(50) NOT NULL,
     -- home_planet VARCHAR(50) REFERENCES Planet (name)
     --     on delete set null,
-    orphanage VARCHAR(50) REFERENCES Orphanages
+    orphanage VARCHAR(50) REFERENCES Orphanages (name)
 		ON DELETE SET NULL
 );
 
@@ -46,23 +46,23 @@ CREATE TABLE Medical (
 
 CREATE TABLE Home_planet (
     alien_id INT PRIMARY KEY REFERENCES Alien(ID),
-    planet REFERENCES Planet(name)
+    planet VARCHAR(50) REFERENCES Planet(name)
         ON DELETE SET NULL
 );
 
 
 CREATE TABLE Inhabits (
     alien_id INT PRIMARY KEY REFERENCES Alien(ID),
-    planet REFERENCES Planet(name)  --a families planet may be null if they are on a spacecraft
+    planet VARCHAR(50) REFERENCES Planet(name)  --a families planet may be null if they are on a spacecraft
         ON DELETE SET NULL
 );
 
 
 CREATE TABLE Adoption_request (
      request_id SERIAL PRIMARY KEY,
-     alien_id INT REFERENCES alien(alien_id)
+     alien_id INT REFERENCES Alien(ID)
         ON DELETE CASCADE,
-     family_id INT REFERENCES family(family_id)
+     family_id INT REFERENCES family(ID)
         ON DELETE CASCADE,
      UNIQUE (alien_id, family_id) -- Ensures a family cannot request the same alien twice
  );

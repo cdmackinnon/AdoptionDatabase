@@ -4,8 +4,7 @@
 CREATE TABLE Family(
     ID SERIAL PRIMARY KEY,
     last_name VARCHAR(50) NOT NULL,
-    income DECIMAL(10, 2),
-    planet_of_residence VARCHAR(50)
+    income DECIMAL(10, 2)
 );
 
 CREATE TABLE Inhabits (
@@ -34,7 +33,7 @@ CREATE TABLE Planet (
 
 CREATE TABLE Orphanages (
     name VARCHAR(50) PRIMARY KEY,
-    agency VARCHAR(50) PRIMARY KEY
+    agency VARCHAR(50) PRIMARY KEY --different agencies may have the same named orphanages
 );
 
 CREATE TABLE Medical (
@@ -57,7 +56,6 @@ CREATE TABLE Home_planet (
     alien_id INT PRIMARY KEY REFERENCES Alien(ID),
     planet REFERENCES Planet(name)
 );
-
 
 CREATE TABLE Adopted (
     alien_id INT PRIMARY KEY REFERENCES Alien(ID) 

@@ -2,7 +2,7 @@
 -- By Connor MacKinnon, Jake Richardson, Hannah Zimmerman
 
 CREATE TABLE Family(
-    ID SERIAL PRIMARY KEY,
+    ID SERIAL PRIMARY KEY,
     last_name VARCHAR(50) NOT NULL,
     income DECIMAL(10, 2),
     planet_of_residence VARCHAR(50)
@@ -11,19 +11,22 @@ CREATE TABLE Family(
 CREATE TABLE Inhabits (
     alien_id  PRIMARY KEY REFERENCES Alien(ID),
     planet REFERENCES Planet(name)  --a families planet may be null if they are on a spacecraft
+        ON DELETE SET NULL
 );
 
 CREATE TABLE Adoption_request (
      request_id SERIAL PRIMARY KEY,
-     alien_id INT REFERENCES alien(alien_id),
-     family_id INT REFERENCES family(family_id),
+     alien_id INT REFERENCES alien(alien_id)
+        ON DELETE CASCADE,
+     family_id INT REFERENCES family(family_id)
+        ON DELETE CASCADE,
      UNIQUE (alien_id, family_id) -- Ensures a family cannot request the same alien twice
  );
 
 CREATE TABLE Agency (
     name VARCHAR(50) PRIMARY KEY,
     planet VARCHAR(50) REFERENCES planet(name)
-        on delete set null
+        ON DELETE SET NULL
 );
 
 CREATE TABLE Planet (
@@ -49,13 +52,14 @@ CREATE TABLE Alien (
     -- home_planet VARCHAR(50) REFERENCES Planet (name)
     --     on delete set null,
     orphanage VARCHAR(50) REFERENCES Orphanages
-		on delete set null
+		ON DELETE SET NULL
 );
 
 
 CREATE TABLE Home_planet (
     alien_id INT PRIMARY KEY REFERENCES Alien(ID),
     planet REFERENCES Planet(name)
+        ON DELETE SET NULL
 );
 
 

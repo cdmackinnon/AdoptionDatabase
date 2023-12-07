@@ -40,6 +40,25 @@ CREATE TABLE Medical (
 CREATE TABLE Alien (
     ID SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    home_planet VARCHAR(50),
-    orphanage VARCHAR(50) NOT NULL
+    -- home_planet VARCHAR(50) REFERENCES Planet (name)
+    --     on delete set null,
+    -- orphanage VARCHAR(50) REFERENCES Orphanages
+	-- 	on delete set null
+);
+
+CREATE TABLE Home_planet (
+    alien_ID  PRIMARY KEY,
+    planet REFERENCES Planet(name)
+)
+
+CREATE TABLE Houses (
+    alien_ID  PRIMARY KEY REFERENCES Alien(ID),
+    planet REFERENCES Planet(name)
+)
+
+CREATE TABLE Adopted (
+    alien_ID SERIAL PRIMARY KEY REFERENCES Alien (ID)
+        on delete cascade,
+    family_id INT REFERENCES Family (ID)
+        on delete set null
 );

@@ -2,18 +2,23 @@
 -- By Connor MacKinnon, Jake Richardson, Hannah Zimmerman
 
 CREATE TABLE Family(
-    id SERIAL PRIMARY KEY,
+    ID SERIAL PRIMARY KEY,
     last_name VARCHAR(50) NOT NULL,
     income DECIMAL(10, 2),
     planet_of_residence VARCHAR(50)
 );
 
-CREATE TABLE Adoption_request (
-    request_id SERIAL PRIMARY KEY,
-    alien_id INT REFERENCES alien(alien_id),
-    family_id INT REFERENCES family(family_id),
-    UNIQUE (alien_id, family_id) -- Ensures a family cannot request the same alien twice
+CREATE TABLE Inhabits (
+    alien_id  PRIMARY KEY REFERENCES Alien(ID),
+    planet REFERENCES Planet(name)  --a families planet may be null if they are on a spacecraft
 );
+
+CREATE TABLE Adoption_request (
+     request_id SERIAL PRIMARY KEY,
+     alien_id INT REFERENCES alien(alien_id),
+     family_id INT REFERENCES family(family_id),
+     UNIQUE (alien_id, family_id) -- Ensures a family cannot request the same alien twice
+ );
 
 CREATE TABLE Agency (
     name VARCHAR(50) PRIMARY KEY,
@@ -32,7 +37,7 @@ CREATE TABLE Orphanages (
 );
 
 CREATE TABLE Medical (
-    alien_ID SERIAL PRIMARY KEY,
+    alien_id SERIAL PRIMARY KEY,
     age INT,
     vaccinated BOOLEAN
 );
@@ -47,13 +52,15 @@ CREATE TABLE Alien (
 );
 
 CREATE TABLE Home_planet (
-    alien_ID  PRIMARY KEY REFERENCES Alien(ID),
+    alien_id INT PRIMARY KEY REFERENCES Alien(ID),
     planet REFERENCES Planet(name)
-)
+);
+
 
 CREATE TABLE Adopted (
-    alien_ID SERIAL PRIMARY KEY REFERENCES Alien (ID)
-        on delete cascade,
-    family_id INT REFERENCES Family (ID)
-        on delete set null
+    alien_id INT PRIMARY KEY REFERENCES Alien(ID) 
+        ON DELETE CASCADE,
+    family_id INT REFERENCES family(ID) 
+        ON DELETE SET NULL, 
+    UNIQUE (alien_id, family_id) -- Ensures a family cannot adopted the same alien twice
 );

@@ -32,8 +32,9 @@ CREATE TABLE Alien (
     name VARCHAR(50) NOT NULL,
     -- home_planet VARCHAR(50) REFERENCES Planet (name)
     --     on delete set null,
-    orphanage VARCHAR(50) REFERENCES Orphanages (name)
-		ON DELETE SET NULL
+    orphanage VARCHAR(50) REFERENCES Orphanages(name)
+		ON DELETE SET NULL,
+    agency VARCHAR(50) REFERENCES Agency(name)
 );
 
 

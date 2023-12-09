@@ -27,14 +27,14 @@ CREATE TABLE Orphanages (
     PRIMARY KEY (name, agency)
 );
 
+
 CREATE TABLE Alien (
     ID SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    -- home_planet VARCHAR(50) REFERENCES Planet (name)
-    --     on delete set null,
-    orphanage VARCHAR(50) REFERENCES Orphanages(name)
-		ON DELETE SET NULL,
-    agency VARCHAR(50) REFERENCES Agency(name)
+    orphanage_name VARCHAR(50),
+    orphanage_agency VARCHAR(50),
+    agency VARCHAR(50) REFERENCES Agency(name),
+    FOREIGN KEY (orphanage_name, orphanage_agency) REFERENCES Orphanages(name, agency) ON DELETE SET NULL
 );
 
 

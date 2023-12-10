@@ -6,6 +6,43 @@ import psycopg2
 conn = psycopg2.connect(dbname="databased")
 cur = conn.cursor()
 
+def GenerateAlienFile():
+    alien = input("Enter the Alien's ID: ")
+    query = """SELECT alien.name, age, vaccinated, orphanage_name, agency_name, planet
+                    FROM alien LEFT JOIN medical ON alien.id = medical.alien_id LEFT JOIN agency ON alien.agency_name = agency.name
+                    WHERE alien.id = %s"""
+    cur.execute(query,(alien,))
+    alien_info = cur.fetchone()
+    if alien_info is None:
+        print("Alien not found")
+        return
+    name, age, vaccinated, orphanage_name, agency_name, planet = alien_info
+    print(f"Alien ID: {alien}")
+    print(f"Name: {name}")
+    print(f"Age: {age} years old1")
+    print(f"Up-to-date on vaccines: {vaccinated}")
+    print(f"Orphanage: {orphanage_name} on {planet}")
+    print(f"Orphanage agency: {agency_name}")
+
+
+def GenerateFamilyFile():
+    pass
+
+
+def GenerateAdoptionRequests():
+    pass
+
+
+def NewAdoptionRequest():
+    pass
+
+
+def DecideAdoptionRequest():
+    pass
+
+
+def GenerateOrphanageList():
+    pass
 
 
 # Interface for calling functions. Presents the user with all menu options and an option to exit

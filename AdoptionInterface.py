@@ -26,7 +26,20 @@ def GenerateAlienFile():
 
 
 def GenerateFamilyFile():
-    pass
+    family = input("Enter the Family's ID: ")
+    query = """select family.ID, last_name, income, planet
+                    from family left join inhabits on family.id = inhabits.family_id
+                    where family.id = %s"""
+    cur.execute(query,(family,))
+    family_info = cur.fetchone()
+    if family_info is None:
+        print("Family not found")
+        return
+    id, last_name, income, planet = family_info
+    print(f"Family ID: {family}")
+    print(f"Last Name: {last_name}")
+    print(f"Income: ${income}")
+    print(f"Planet: {planet}")
 
 
 def GenerateAdoptionRequests():

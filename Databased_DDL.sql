@@ -1,43 +1,53 @@
+-- ===============================================
 -- Project 2 Alien Adoption Table Instantiation
 -- By Connor MacKinnon, Jake Richardson, Hannah Zimmerman
+-- ===============================================
 
+-- Description: Stores information about planets
 CREATE TABLE Planet (
     name VARCHAR(50) PRIMARY KEY,
     galaxy VARCHAR(50) NOT NULL,
     climate VARCHAR(50) NOT NULL
 );
 
-
+-- Description: Stores information about family identifying each by ID
+-- Last names are required. Income max: 999999999.99 and min: 0.00
 CREATE TABLE Family(
     ID SERIAL PRIMARY KEY,
     last_name VARCHAR(50) NOT NULL,
-    income DECIMAL(10, 2)
+    income DECIMAL(11, 2) CHECK (income >= 0)
 );
 
+-- Description: Stores information about Agencies identifying each by unique names
+-- Agencies must have a planet they're located on. Multiple agencies may exist on a planet
 CREATE TABLE Agency (
     name VARCHAR(50) PRIMARY KEY,
-    planet VARCHAR(50) REFERENCES planet(name)
-        ON DELETE SET NULL
+    planet VARCHAR(50) REFERENCES Planet(name)
 );
 
-
+-- Description: Stores information about Orphanages identifying each by unique names
+-- Orphanages must have an Agency they're associated with
+-- Different agencies may have the same named orphanages
 CREATE TABLE Orphanages (
     name VARCHAR(50),
-    agency VARCHAR(50) REFERENCES Agency(name), --different agencies may have the same named orphanages
-    PRIMARY KEY (name, agency)
+    agency VARCHAR(50) REFERENCES Agency(name),
+    PRIMARY KEY (name, agency) 
 );
 
-
+-- Description: Stores information about Aliens identifying each by unique IDs
+-- Aliens must have an orphanage they are associated with
+-- TODO consider implications of a deleted orphanage/agency 
+-- CASCADE vs RESTRICT. Delete alien or prevent deletion, ER DIAGRAM demands name + agency exist in alien
 CREATE TABLE Alien (
     ID SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    orphanage_name VARCHAR(50),
-    orphanage_agency VARCHAR(50),
-    agency VARCHAR(50) REFERENCES Agency(name),
-    FOREIGN KEY (orphanage_name, orphanage_agency) REFERENCES Orphanages(name, agency) ON DELETE SET NULL
+    orphanage_name VARCHAR(50) NOT NULL,
+    agency_name VARCHAR(50) REFERENCES Agency(name),
+    FOREIGN KEY (orphanage_name, agency_name) REFERENCES Orphanages(name, agency) ON DELETE CASCADE
 );
 
-
+-- Description: Stores information about Alien Medical Records identifying each by Alien IDs
+-- Vaccination Status and Age can be null (unknown)
 CREATE TABLE Medical (
     alien_id INT PRIMARY KEY REFERENCES Alien (ID),
     age INT,
@@ -45,34 +55,40 @@ CREATE TABLE Medical (
 );
 
 
+-- Description: Stores information about Alien Home Planets 
 CREATE TABLE Home_planet (
     alien_id INT PRIMARY KEY REFERENCES Alien(ID),
     planet VARCHAR(50) REFERENCES Planet(name)
         ON DELETE SET NULL
 );
 
-
+-- Description: Stores the planet where Families live
+--  A families planet may be null if they are on a spacecraft
 CREATE TABLE Inhabits (
     alien_id INT PRIMARY KEY REFERENCES Alien(ID),
-    planet VARCHAR(50) REFERENCES Planet(name)  --a families planet may be null if they are on a spacecraft
+    planet VARCHAR(50) REFERENCES Planet(name)  
         ON DELETE SET NULL
 );
 
-
+-- Description: Stores information about pending adoption requests
+-- If an Alien or Family is removed from the database the request is deleted
+-- A family cannot request the same alien twice
 CREATE TABLE Adoption_request (
      request_id SERIAL PRIMARY KEY,
      alien_id INT REFERENCES Alien(ID)
         ON DELETE CASCADE,
      family_id INT REFERENCES family(ID)
         ON DELETE CASCADE,
-     UNIQUE (alien_id, family_id) -- Ensures a family cannot request the same alien twice
+     UNIQUE (alien_id, family_id) 
  );
 
-
+-- Description: Stores information about aliens/families adoptions
+-- An alien may not always have a family
+-- A family cannot adopt the same alien twice
 CREATE TABLE Adopted (
     alien_id INT PRIMARY KEY REFERENCES Alien(ID) 
         ON DELETE CASCADE,
     family_id INT REFERENCES family(ID) 
         ON DELETE SET NULL, 
-    UNIQUE (alien_id, family_id) -- Ensures a family cannot adopted the same alien twice
+    UNIQUE (alien_id, family_id)
 );

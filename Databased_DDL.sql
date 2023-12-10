@@ -1,57 +1,63 @@
+-- ===============================================
 -- Project 2 Alien Adoption Table Instantiation
 -- By Connor MacKinnon, Jake Richardson, Hannah Zimmerman
+-- ===============================================
 
-CREATE TABLE Family(
-    ID SERIAL PRIMARY KEY,
-    last_name VARCHAR(50) NOT NULL,
-    income DECIMAL(10, 2)
-);
-
-CREATE TABLE Inhabits (
-    alien_id  PRIMARY KEY REFERENCES Alien(ID),
-    planet REFERENCES Planet(name)  --a families planet may be null if they are on a spacecraft
-);
-
-CREATE TABLE Adoption_request (
-     request_id SERIAL PRIMARY KEY,
-     alien_id INT REFERENCES alien(alien_id),
-     family_id INT REFERENCES family(family_id),
-     UNIQUE (alien_id, family_id) -- Ensures a family cannot request the same alien twice
- );
-
-CREATE TABLE Agency (
-    name VARCHAR(50) PRIMARY KEY,
-    planet VARCHAR(50) REFERENCES planet(name)
-        on delete set null
-);
-
+-- Description: Stores information about planets
 CREATE TABLE Planet (
     name VARCHAR(50) PRIMARY KEY,
     galaxy VARCHAR(50) NOT NULL,
     climate VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE Orphanages (
-    name VARCHAR(50) PRIMARY KEY,
-    agency VARCHAR(50) PRIMARY KEY --different agencies may have the same named orphanages
+-- Description: Stores information about family identifying each by ID
+-- Last names are required. Income max: 99999999.99 and min: 0.00
+CREATE TABLE Family(
+    ID SERIAL PRIMARY KEY,
+    last_name VARCHAR(50) NOT NULL,
+    income DECIMAL(10, 2) CHECK (income >= 0)
 );
 
+-- Description: Stores information about Agencies identifying each by unique names
+-- Agencies must have a planet they're located on. Multiple agencies may exist on a planet
+-- If a planet is destroyed the agencies on it are also destroyed
+-- TODO: Can planet be set null, or is the agency destroyed
+CREATE TABLE Agency (
+    name VARCHAR(50) PRIMARY KEY,
+    planet VARCHAR(50) REFERENCES Planet(name)
+        ON DELETE SET NULL
+);
+
+-- Description: Stores information about Orphanages identifying each by unique names
+-- Orphanages must have an Agency they're associated with
+-- Different agencies may have the same named orphanages
+CREATE TABLE Orphanages (
+    name VARCHAR(50),
+    agency VARCHAR(50) REFERENCES Agency(name),
+    PRIMARY KEY (name, agency) 
+);
+
+-- Description: Stores information about Aliens identifying each by unique IDs
+-- Aliens must have an orphanage they are associated with
+-- TODO HOW DO WE FIT AGENCY IN HERE 
+CREATE TABLE Alien (
+    ID SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    orphanage_name VARCHAR(50) NOT NULL,
+    --orphanage_agency VARCHAR(50),     dependency
+    agency VARCHAR(50) REFERENCES Agency(name),
+    FOREIGN KEY (orphanage_name, orphanage_agency) REFERENCES Orphanages(name, agency) ON DELETE SET NULL
+);
+
+-- Description: Stores information about Alien Medical Records identifying each by Alien IDs
 CREATE TABLE Medical (
     alien_id INT PRIMARY KEY REFERENCES Alien (ID),
     age INT,
     vaccinated BOOLEAN
 );
 
-CREATE TABLE Alien (
-    ID SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    -- home_planet VARCHAR(50) REFERENCES Planet (name)
-    --     on delete set null,
-    orphanage VARCHAR(50) REFERENCES Orphanages
-		on delete set null
-);
-
-
+-- Description: Stores information about Alien Home Planets 
+-- TODO address planet destruction
 CREATE TABLE Home_planet (
     alien_id INT PRIMARY KEY REFERENCES Alien(ID),
     planet REFERENCES Planet(name)

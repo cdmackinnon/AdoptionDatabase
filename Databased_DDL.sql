@@ -29,7 +29,7 @@ CREATE TABLE Agency (
 -- Orphanages must have an Agency they're associated with
 -- Different agencies may have the same named orphanages
 CREATE TABLE Orphanages (
-    name VARCHAR(50) NOT NULL,
+    name VARCHAR(50),
     agency VARCHAR(50) REFERENCES Agency(name),
     PRIMARY KEY (name, agency) 
 );
@@ -42,8 +42,8 @@ CREATE TABLE Alien (
     ID SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     orphanage_name VARCHAR(50) NOT NULL,
-    orphanage_agency VARCHAR(50) REFERENCES Agency(name),
-    FOREIGN KEY (orphanage_name, orphanage_agency) REFERENCES Orphanages(name, agency) ON DELETE CASCADE
+    agency_name VARCHAR(50) REFERENCES Agency(name),
+    FOREIGN KEY (orphanage_name, agency_name) REFERENCES Orphanages(name, agency) ON DELETE CASCADE
 );
 
 -- Description: Stores information about Alien Medical Records identifying each by Alien IDs
@@ -54,11 +54,33 @@ CREATE TABLE Medical (
     vaccinated BOOLEAN
 );
 
+
 -- Description: Stores information about Alien Home Planets 
 CREATE TABLE Home_planet (
     alien_id INT PRIMARY KEY REFERENCES Alien(ID),
-    planet REFERENCES Planet(name)
+    planet VARCHAR(50) REFERENCES Planet(name)
+        ON DELETE SET NULL
 );
+
+-- Description: Stores the planet where Families live
+--  A families planet may be null if they are on a spacecraft
+CREATE TABLE Inhabits (
+    alien_id INT PRIMARY KEY REFERENCES Alien(ID),
+    planet VARCHAR(50) REFERENCES Planet(name)  
+        ON DELETE SET NULL
+);
+
+-- Description: Stores information about pending adoption requests
+-- If an Alien or Family is removed from the database the request is deleted
+-- A family cannot request the same alien twice
+CREATE TABLE Adoption_request (
+     request_id SERIAL PRIMARY KEY,
+     alien_id INT REFERENCES Alien(ID)
+        ON DELETE CASCADE,
+     family_id INT REFERENCES family(ID)
+        ON DELETE CASCADE,
+     UNIQUE (alien_id, family_id) 
+ );
 
 -- Description: Stores information about aliens/families adoptions
 -- An alien may not always have a family

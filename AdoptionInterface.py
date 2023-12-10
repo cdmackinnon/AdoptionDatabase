@@ -54,8 +54,34 @@ def DecideAdoptionRequest():
     pass
 
 
-def GenerateOrphanageList():
-    pass
+def GenerateAdoptableList():
+    query = """SELECT alien.id, alien.name, orphanages.name, agency, planet
+                    FROM alien left JOIN orphanages ON alien.orphanage_name = orphanages.name AND alien.agency_name = orphanages.agency
+                    JOIN agency ON orphanages.agency = agency.name
+					WHERE alien.id NOT IN (
+					SELECT alien_id
+					FROM adopted )
+                    GROUP BY alien.id, orphanages.name, agency, planet
+                    ORDER BY alien.id;"""
+
+    cur.execute(query)
+    for i in cur:
+        print("Alien ID: ", end="")
+        print(i[0])
+
+        print("Name: ", end="")
+        print(i[1])
+
+        print("Orphanage: ", end="")
+        print(i[2])
+
+        print("Orphanage Agency: ", end="")
+        print(i[3])
+
+        print("Planet: ", end="")
+        print(i[4])
+
+        print()
 
 
 # Interface for calling functions. Presents the user with all menu options and an option to exit
@@ -68,7 +94,7 @@ def MainMenu():
         print("3. View open adoption requests")
         print("4. Create new adoption request")
         print("5. Accept/Deny adoption request")
-        print("6. View all aliens at a specific orphanage")
+        print("6. View all adoptable aliens")
         print("7. Exit")
 
         choice = input("Enter your choice (1-7): ")
@@ -84,7 +110,7 @@ def MainMenu():
         elif choice == '5':
             DecideAdoptionRequest()
         elif choice == '6':
-            GenerateOrphanageList()
+            GenerateAdoptableList()
         elif choice == '7':
             print("Exiting program!")
             break

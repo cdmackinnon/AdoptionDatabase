@@ -6,7 +6,8 @@
 INSERT INTO Planet (name, galaxy, climate) VALUES
     ('Earth', 'Milky Way', 'Temperate'),
     ('Mars', 'Milky Way', 'Cold'),
-    ('Venus', 'Milky Way', 'Hot');
+    ('Venus', 'Milky Way', 'Hot'),
+    ('Anubisia', 'Osiris Expanse', 'Inferno');
 
 INSERT INTO Family (ID, last_name, income) VALUES
     (123, 'Smith', 75000.00),
@@ -25,8 +26,8 @@ INSERT INTO Orphanages (name, agency) VALUES
     ('Lunar Orphanage', 'Galactic Adoption Agency'),
     ('Lunar Orphanage', 'Vast Adoption Agency');
 
-INSERT INTO Alien (ID, name, orphanage_name, orphanage_agency) VALUES
-    (00000, 'Sally', NULL, NULL),
+INSERT INTO Alien (ID, name, orphanage_name, agency_name) VALUES
+    (00000, 'Sally', 'Lunar Orphanage', 'Galactic Adoption Agency'),
     (12345, 'Elon', 'Stellar Orphanage', 'Galactic Adoption Agency'),
     (88888, 'Luna', 'Lunar Orphanage', 'Galactic Adoption Agency'),
     (98765, 'Xeno', 'Lunar Orphanage', 'Vast Adoption Agency'),
@@ -34,7 +35,7 @@ INSERT INTO Alien (ID, name, orphanage_name, orphanage_agency) VALUES
     (55555, 'Harry', 'Stellar Orphanage', 'Galactic Adoption Agency');
 
 INSERT INTO Medical (alien_id, age, vaccinated) VALUES
-    (00000, 2, TRUE),
+    (00000, NULL, NULL),
     (12345, 52, FALSE),
     (88888, 300, TRUE),
     (98765, 8, TRUE),
@@ -42,7 +43,7 @@ INSERT INTO Medical (alien_id, age, vaccinated) VALUES
     (55555, 3958, TRUE);
 
 INSERT INTO Home_planet (alien_id, planet) VALUES
-    (00000, 'Earth'),
+    (00000, NULL),
     (12345, 'Earth'),
     (88888, 'Earth'),
     (98765, 'Venus'),

@@ -65,7 +65,7 @@ CREATE TABLE Home_planet (
 -- Description: Stores the planet where Families live
 --  A families planet may be null if they are on a spacecraft
 CREATE TABLE Inhabits (
-    alien_id INT PRIMARY KEY REFERENCES Alien(ID),
+    family_id INT PRIMARY KEY REFERENCES Family(ID),
     planet VARCHAR(50) REFERENCES Planet(name)  
         ON DELETE SET NULL
 );

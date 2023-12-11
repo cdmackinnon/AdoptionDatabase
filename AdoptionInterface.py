@@ -170,6 +170,38 @@ def GenerateAdoptableList():
         print()
 
 
+def OverviewAll():
+    print("\nOverview of Aliens:")
+    query_alien = """SELECT alien.id, alien.name, orphanages.name AS orphanage, agency.name AS agency, planet
+                    FROM alien 
+                    LEFT JOIN orphanages ON alien.orphanage_name = orphanages.name AND alien.agency_name = orphanages.agency
+                    JOIN agency ON orphanages.agency = agency.name;"""
+    cur.execute(query_alien)
+    for alien_info in cur:
+        print(f"Alien ID: {alien_info[0]}")
+        print(f"Name: {alien_info[1]}")
+        print(f"Orphanage: {alien_info[2] if alien_info[2] else 'Not specified'}")
+        print(f"Orphanage Agency: {alien_info[3] if alien_info[3] else 'Not specified'}")
+        print(f"Planet: {alien_info[4]}\n")
+
+    print("\nOverview of Families:")
+    query_family = """SELECT family.ID, last_name, income, planet
+                    FROM family LEFT JOIN inhabits ON family.id = inhabits.family_id;"""
+    cur.execute(query_family)
+    for family_info in cur:
+        print(f"Family ID: {family_info[0]}")
+        print(f"Last Name: {family_info[1]}")
+        print(f"Income: ${family_info[2]}")
+        print(f"Planet: {family_info[3] if family_info[3] else 'Not specified'}\n")
+
+    print("\nOverview of Planets:")
+    query_planet = """SELECT name, galaxy, climate FROM planet;"""
+    cur.execute(query_planet)
+    for planet_info in cur:
+        print(f"Planet Name: {planet_info[0]}")
+        print(f"Galaxy: {planet_info[1]}")
+        print(f"Climate: {planet_info[2]}\n")
+
 # Interface for calling functions. Presents the user with all menu options and an option to exit
 # Program should continue presenting the menu until the user chooses to exit
 def MainMenu():
@@ -181,9 +213,10 @@ def MainMenu():
         print("4. Create new adoption request")
         print("5. Accept/Deny adoption request")
         print("6. View all adoptable aliens")
-        print("7. Exit")
+        print("7. See an overview of the database")
+        print("8. Exit")
 
-        choice = input("Enter your choice (1-7): ")
+        choice = input("Enter your choice (1-8): ")
         print("\n")
         if choice == '1':
             GenerateAlienFile()
@@ -199,6 +232,8 @@ def MainMenu():
         elif choice == '6':
             GenerateAdoptableList()
         elif choice == '7':
+            OverviewAll()
+        elif choice == '8':
             print("Exiting program!")
             break
         else:

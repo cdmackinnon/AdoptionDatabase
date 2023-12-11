@@ -8,21 +8,26 @@ cur = conn.cursor()
 
 def GenerateAlienFile():
     alien = input("Enter the Alien's ID: ")
-    query = """SELECT alien.name, age, vaccinated, orphanage_name, agency_name, planet
-                    FROM alien LEFT JOIN medical ON alien.id = medical.alien_id LEFT JOIN agency ON alien.agency_name = agency.name
-                    WHERE alien.id = %s"""
-    cur.execute(query,(alien,))
+    query = """SELECT alien.name, age, vaccinated, orphanage_name, agency_name, planet, adopted.family_id
+               AS adopted_family
+               FROM alien
+               LEFT JOIN medical ON alien.id = medical.alien_id
+               LEFT JOIN agency ON alien.agency_name = agency.name
+               LEFT JOIN adopted ON alien.id = adopted.alien_id
+               WHERE alien.id = %s"""
+    cur.execute(query, (alien,))
     alien_info = cur.fetchone()
     if alien_info is None:
         print("Alien not found")
         return
-    name, age, vaccinated, orphanage_name, agency_name, planet = alien_info
+    name, age, vaccinated, orphanage_name, agency_name, planet, adopted_family = alien_info
     print(f"Alien ID: {alien}")
     print(f"Name: {name}")
-    print(f"Age: {age} years old1")
+    print(f"Age: {age} years old")
     print(f"Up-to-date on vaccines: {vaccinated}")
     print(f"Orphanage: {orphanage_name} on {planet}")
     print(f"Orphanage agency: {agency_name}")
+    print(f"Adopted Family ID: {adopted_family if adopted_family else 'Not adopted'}")
 
 
 def GenerateFamilyFile():
@@ -42,16 +47,97 @@ def GenerateFamilyFile():
     print(f"Planet: {planet}")
 
 
+
 def GenerateAdoptionRequests():
-    pass
+    query = """SELECT request_id, family_id, alien_id
+               FROM adoption_request"""
+    cur.execute(query)
+    adoption_requests = cur.fetchall()
+
+    if not adoption_requests:
+        print("No adoption requests found.")
+        return
+
+    print("Open Adoption Requests:")
+    for request_id, family_id, alien_id in adoption_requests:
+        print(f"Request ID: {request_id}, Family ID: {family_id}, Alien ID: {alien_id}, Status: Open")
+    print()
 
 
 def NewAdoptionRequest():
-    pass
+    alien_id = input("Enter Alien ID: ")
+
+    # Check if the alien is already adopted
+    # Alien may exist in adopted without a family if the family changed their mind
+    check_adopted_query = "SELECT * FROM adopted WHERE alien_id = %s"
+    cur.execute(check_adopted_query, (alien_id,))
+    alien_info = cur.fetchone()
+    if alien_info:
+        alien_id, family_id = alien_info
+        if family_id is not None:
+            print("This alien is already adopted.")
+            return
+
+    # Check if there is already an adoption request for this family and alien
+    check_existing_request_query = "SELECT * FROM adoption_request WHERE alien_id = %s AND family_id = %s"
+    cur.execute(check_existing_request_query, (alien_id, family_id))
+    existing_request = cur.fetchone()
+    if existing_request:
+        print("There is already an adoption request for this family and alien.")
+        return
+
+    # After passing all check: prompt user for a non-null family ID
+    while True:
+        family_id = input("Enter Family ID: ")
+        if family_id:
+            break
+        else:
+            print("Family ID cannot be null. Please enter a valid Family ID.")
+
+    # Create the request
+    insert_request_query = "INSERT INTO adoption_request (family_id, alien_id) VALUES (%s, %s) RETURNING request_id"
+    cur.execute(insert_request_query, (family_id, alien_id))
+    request_id = cur.fetchone()[0]
+
+    print(f"Adoption request created successfully. Request ID: {request_id}")
+
 
 
 def DecideAdoptionRequest():
-    pass
+    request_id = input("Enter Request ID: ")
+
+    # Check if the adoption request exists
+    check_request_query = "SELECT alien_id, family_id FROM adoption_request WHERE request_id = %s"
+    cur.execute(check_request_query, (request_id,))
+    adoption_request = cur.fetchone()
+
+    if adoption_request is None:
+        print("Adoption request not found.")
+        return
+
+    alien_id, family_id = adoption_request
+
+    print(f"Adoption Request ID: {request_id}")
+    print(f"Alien ID: {alien_id}")
+    print(f"Family ID: {family_id}")
+
+    print("1. Accept Adoption Request")
+    print("2. Deny Adoption Request")
+    decision = input("Enter your decision (1 or 2): ")
+
+    if decision == '1':
+        # Insert into adopted table
+        insert_adopted_query = "INSERT INTO adopted (alien_id, family_id) VALUES (%s, %s)"
+        cur.execute(insert_adopted_query, (alien_id, family_id) if family_id else (alien_id,))
+        print("Adoption request accepted. Alien added to the adopted table.")
+    elif decision == '2':
+        print("Adoption request denied.")
+    else:
+        print("Invalid decision. Please enter either 1 or 2.")
+
+    # Delete the adoption request
+    delete_query = "DELETE FROM adoption_request WHERE request_id = %s"
+    cur.execute(delete_query, (request_id,))
 
 
 def GenerateAdoptableList():
@@ -108,6 +194,7 @@ def MainMenu():
         elif choice == '4':
             NewAdoptionRequest()
         elif choice == '5':
+            GenerateAdoptionRequests()
             DecideAdoptionRequest()
         elif choice == '6':
             GenerateAdoptableList()

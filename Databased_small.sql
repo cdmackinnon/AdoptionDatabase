@@ -62,4 +62,5 @@ INSERT INTO Adoption_request (alien_id, family_id) VALUES
     (12345, 321);
 
 INSERT INTO Adopted (alien_id, family_id) VALUES
+    (98765, NULL),
     (00000, 444);

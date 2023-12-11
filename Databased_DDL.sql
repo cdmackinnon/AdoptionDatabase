@@ -15,14 +15,14 @@ CREATE TABLE Planet (
 CREATE TABLE Family(
     ID SERIAL PRIMARY KEY,
     last_name VARCHAR(50) NOT NULL,
-    income DECIMAL(11, 2) CHECK (income >= 0)
+    income DECIMAL(11, 2) CHECK (income >= 0) NOT NULL
 );
 
 -- Description: Stores information about Agencies identifying each by unique names
 -- Agencies must have a planet they're located on. Multiple agencies may exist on a planet
 CREATE TABLE Agency (
     name VARCHAR(50) PRIMARY KEY,
-    planet VARCHAR(50) REFERENCES Planet(name)
+    planet VARCHAR(50) REFERENCES Planet(name) NOT NULL
 );
 
 -- Description: Stores information about Orphanages identifying each by unique names

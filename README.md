@@ -1,27 +1,46 @@
-# Adoption Database ( CSCI 421 Database Systems )
-## Term Project – Phase Two 
-### Due Friday, December 8, 2023 11:59:00 PM EST
 
-In this project, you'll provide the prototype implementation of your term project database and an optional basic interface for it.
 
-[Google Doc](https://docs.google.com/document/d/1gfmpAALoAo1Lg0dl1MrpXSNFmDQSYqzzieVb54i0OsE/edit)
+# Alien Adoption Database System
 
-### I – Database Normalization and Implementation
+## Introduction
+This repository contains the implementation of an Alien Adoption Database System. The system is designed to facilitate the adoption of orphaned aliens by families across different planets. The database schema, SQL scripts for table creation, and Python scripts for interacting with the database are provided.
 
-Begin by considering our feedback from your ER diagrams. Once you have finalized your design, translate it to schema definitions using the approach we covered in class and list all functional dependencies in your schemata. If your ER design is robust, these tables should be in BCNF. If they are not, decompose them until all of your tables are in BCNF.
+## Requirements
+- Python 3.x
+- PostgreSQL
 
-When you are satisfied with the normalization of your tables, write an SQL file with DDL statements to instantiate your design. You may need to run these DDL statements several times, so recall that you can use the `DROP TABLE IF EXISTS` command at the beginning of your DDL file before creating the tables.
+## Setting Up the Database
+1. Ensure PostgreSQL is installed and running on your system.
+2. Create a new database
+3. Execute the SQL scripts provided in the `database_setup.sql` file to create the necessary tables and populate sample data.
 
-### II — Populating the Database
+## Running the Program
+1. Clone this repository to your local machine.
+2. Navigate to the directory containing the Python scripts.
+3. Run the `main.py` script using Python.
+   ```bash
+   python main.py
+   ```
+4. Follow the on-screen menu prompts to interact with the database system.
 
-By hand, construct a small set of tuples for each table in your database and write an SQL file to insert those tuples. The size and complexity should be similar to the small example we've been using based on the university schema. Be certain that the example you construct exercises all integrity constraints in your design.
+## Functionality
+The program provides the following functionality through a command-line interface:
+- Viewing alien and family information.
+- Managing adoption requests.
+- Generating lists of adoptable aliens.
+- Providing an overview of the database.
 
-### III (bonus) – A Python Interface to the Database
+## Sample Data
+Sample data is provided in the `database_setup.sql` file to populate the database with example records. This data exercises all integrity constraints of the database design.
 
-Like you did in project 1, write a Python program that presents the user with menu options to query or update your database. The menu options should be for actions specific to your enterprise, like registering a student was specific to the university example.
+## Notes
+- Aliens reside in orphanages associated with agencies.
+- Adoption requests are created between aliens and families.
+- Upon approval, aliens are added to the adopted table, indicating adoption.
+- The system ensures data integrity and handles adoption-related transactions efficiently.
+- [View the ER Diagram](https://docs.google.com/document/d/1gfmpAALoAo1Lg0dl1MrpXSNFmDQSYqzzieVb54i0OsE/view)
 
-### Submission Expectations
-
-- `Whatever_DDL.sql`: Your team's DDL statements to instantiate your database.
-- `Whatever_small.sql`: Your team's manually constructed SQL statements to populate a small example of your database. The inserted tuples must exercise all integrity constraints of your design.
-- `TeamAwesome.pdf`: A writeup containing the full documentation for your system. This document should include your ER diagrams, the resulting schema definitions and normalization process including arguments that the final schemata are in BCNF, and instructions on how to use your interface to use your system if you submit one.
+## Contributors
+- Connor MacKinnon
+- Jake Richardson
+- Hannah Zimmerman
